@@ -4,23 +4,22 @@ const app = express();
 const port = 3000;
 
 app.get("/", (req, res) => {
-  res.send("DevOps Demo l‰uft");
+    res.send("DevOps Demo l√§uft");
 });
 
 app.get("/health", (req, res) => {
-  res.json({
-    status: "ok"
-  });
+    res.json({
+        status: "ok"
+    });
 });
 
 app.get("/api/info", (req, res) => {
-  res.json({
-    application: "devops-demo",
-    version: "1.0.0"
-  });
+    res.json({
+        application: "devops-demo",
+        version: "1.0.0"
+    });
 });
 
 app.listen(port, () => {
-  console.log(`Server l‰uft auf http://localhost:${port}`);
+    console.log(`Server l√§uft auf http://localhost:${port}`);
 });
-
