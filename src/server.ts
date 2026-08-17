@@ -20,6 +20,15 @@ app.get("/api/info", (req, res) => {
     });
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Server läuft auf http://localhost:${port}`);
+});
+
+process.on("SIGTERM", () => {
+    console.log("SIGTERM empfangen – Server wird beendet.");
+
+    server.close(() => {
+        console.log("Server sauber beendet.");
+        process.exit(0);
+    });
 });
