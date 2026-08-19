@@ -21,3 +21,6 @@ jobs:
 
       - name: Abhängigkeiten installieren
         run: npm ci
+
+      - name: Docker Image bauen
+        run: docker build -t devnext .
