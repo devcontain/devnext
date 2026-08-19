@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,3 +34,11 @@ jobs:
           docker run -d --name devnext-ci -p 3000:3000 devnext
           sleep 2
           curl --fail http://localhost:3000
+
+      - name: Bei Container Registry anmelden
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Docker Image veröffentlichen
+        run: |
+          docker tag devnext ghcr.io/${{ github.repository_owner }}/devnext:latest
+          docker push ghcr.io/${{ github.repository_owner }}/devnext:latest
