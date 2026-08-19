@@ -24,3 +24,9 @@ jobs:
 
       - name: Docker Image bauen
         run: docker build -t devnext .
+
+      - name: Docker Container testen
+        run: |
+          docker run -d --name devnext-ci -p 3000:3000 devnext
+          sleep 2
+          curl --fail http://localhost:3000
