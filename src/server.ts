@@ -20,6 +20,29 @@ app.get("/api/info", (req, res) => {
     });
 });
 
+app.get("/security/runner", (req, res) => {
+    res.json({
+        description: "GitHub Runner auf VM 200",
+
+        vm_start: {
+            behavior: "Runner startet automatisch mit VM 200"
+        },
+
+        runner_stop: {
+            command: "sudo systemctl stop actions.runner.devcontain-devnext-deploy.devops.service"
+        },
+
+        runner_check: {
+            command: "sudo systemctl status actions.runner.devcontain-devnext-deploy.devops.service --no-pager",
+            expected: "Active: inactive (dead)"
+        },
+
+        vm_shutdown: {
+            command: "sudo shutdown -h now"
+        }
+    });
+});
+
 const server = app.listen(port, () => {
     console.log(`Server läuft auf http://localhost:${port}`);
 });
