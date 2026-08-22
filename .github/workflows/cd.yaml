@@ -10,3 +10,6 @@ jobs:
     steps:
       - name: Runner check
         run: hostname
+
+      - name: Deploy devnext
+        run: sudo systemctl start devnext-deploy.service
