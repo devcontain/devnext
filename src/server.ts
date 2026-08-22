@@ -1,7 +1,15 @@
 import express from "express";
+import { collectDefaultMetrics, register } from "prom-client";
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;
+
+collectDefaultMetrics();
+
+app.get("/metrics", async (_req, res) => {
+    res.set("Content-Type", register.contentType);
+    res.end(await register.metrics());
+});
 
 app.get("/", (req, res) => {
     res.send("DevOps Demo läuft");
