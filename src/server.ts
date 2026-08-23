@@ -12,7 +12,40 @@ app.get("/metrics", async (_req, res) => {
 });
 
 app.get("/", (req, res) => {
-    res.send("DevOps Demo läuft");
+    res.send(`
+        DevOps Demo "devnext" läuft
+
+        DevOps Command List
+
+        ssh tronic@192.168.178.29 → DevOps-VM verbinden
+        ssh root@192.168.178.26 → Proxmox verbinden
+        ssh -T git@github.com → GitHub-SSH testen
+        ssh-add -l → Geladene SSH-Keys anzeigen
+
+        gh auth status → GitHub-Login prüfen
+        gh repo clone devcontain/devnext → DevNext klonen
+        gh repo clone devcontain/devnext-deploy → Deploy-Repo klonen
+
+        touch → Datei erstellen
+        chmod +x → Datei ausführbar machen
+        ~/start-devops.sh → DevNext + Monitoring starten
+
+        docker ps → Laufende Container
+        docker ps -a → Alle Container
+        docker images → Docker-Images anzeigen
+        docker start devnext → DevNext starten
+        docker stop devnext → DevNext stoppen
+        docker restart devnext → DevNext neu starten
+        docker logs devnext → DevNext-Logs anzeigen
+
+        docker compose ps → Compose-Status
+        docker compose up -d → Compose starten
+        docker compose down → Compose stoppen
+        docker compose restart → Compose neu starten
+
+        sudo poweroff → VM herunterfahren
+        sudo reboot → VM neu starten
+    `);
 });
 
 app.get("/health", (req, res) => {
@@ -49,41 +82,6 @@ app.get("/security/runner", (req, res) => {
             command: "sudo shutdown -h now"
         }
     });
-});
-
-app.get("/", (req, res) => {
-    res.send(`
-        DevOps Command List
-            
-        ssh tronic@192.168.178.29 → DevOps-VM verbinden
-        ssh root@192.168.178.26 → Proxmox verbinden
-        ssh -T git@github.com → GitHub-SSH testen
-        ssh-add -l → Geladene SSH-Keys anzeigen
-            
-        gh auth status → GitHub-Login prüfen
-        gh repo clone devcontain/devnext → DevNext klonen
-        gh repo clone devcontain/devnext-deploy → Deploy-Repo klonen
-            
-        touch → Datei erstellen
-        chmod +x → Datei ausführbar machen
-        ~/start-devops.sh → DevNext + Monitoring starten
-            
-        docker ps → Laufende Container
-        docker ps -a → Alle Container
-        docker images → Docker-Images anzeigen
-        docker start devnext → DevNext starten
-        docker stop devnext → DevNext stoppen
-        docker restart devnext → DevNext neu starten
-        docker logs devnext → DevNext-Logs anzeigen
-            
-        docker compose ps → Compose-Status
-        docker compose up -d → Compose starten
-        docker compose down → Compose stoppen
-        docker compose restart → Compose neu starten
-            
-        sudo poweroff → VM herunterfahren
-        sudo reboot → VM neu starten
-    `);
 });
 
 const server = app.listen(port, () => {
