@@ -20,7 +20,7 @@ jobs:
       - name: Node.js einrichten
         uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version: "24"
           cache: npm
 
       - name: Abhängigkeiten installieren
@@ -31,14 +31,38 @@ jobs:
 
       - name: Docker Container testen
         run: |
-          docker run -d --name devnext-ci -p 3000:3000 devnext
-          sleep 2
-          curl --fail http://localhost:3000
+          docker run -d \
+            --name devnext-ci \
+            -p 3000:3000 \
+            devnext
 
-      - name: Bei Container Registry anmelden
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          for i in {1..30}; do
+            if curl --fail --silent http://localhost:3000/ > /dev/null; then
+              echo "Container ist erreichbar."
+              exit 0
+            fi
+
+            echo "Warte auf Anwendung..."
+            sleep 1
+          done
+
+          echo "Container wurde nicht rechtzeitig erreichbar."
+          docker logs devnext-ci
+          exit 1
+
+      - name: Bei GitHub Container Registry anmelden
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Docker Image veröffentlichen
         run: |
-          docker tag devnext ghcr.io/${{ github.repository_owner }}/devnext:latest
-          docker push ghcr.io/${{ github.repository_owner }}/devnext:latest
+          IMAGE="ghcr.io/${{ github.repository_owner }}/devnext"
+
+          docker tag devnext "$IMAGE:latest"
+          docker tag devnext "$IMAGE:${{ github.sha }}"
+
+          docker push "$IMAGE:latest"
+          docker push "$IMAGE:${{ github.sha }}"
