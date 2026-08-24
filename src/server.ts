@@ -45,6 +45,15 @@ app.get("/", (req, res) => {
 
         sudo poweroff → VM herunterfahren
         sudo reboot → VM neu starten
+
+        tmux new -s devops → DevOps-Session starten
+        tmux attach -t devops → Session wieder öffnen
+        tmux ls → Sessions anzeigen
+        Ctrl+B, d → Session verlassen, weiterlaufen lassen
+        Ctrl+B, % → links/rechts teilen
+        Ctrl+B, " → oben/unten teilen
+        Ctrl+B, Pfeiltaste → Pane wechseln
+        Ctrl+B, x → Pane schließen
     `);
 });
 
