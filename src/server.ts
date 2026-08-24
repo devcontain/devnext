@@ -54,6 +54,27 @@ app.get("/", (req, res) => {
         Ctrl+B, " → oben/unten teilen
         Ctrl+B, Pfeiltaste → Pane wechseln
         Ctrl+B, x → Pane schließen
+
+        journalctl -fu devnext-deploy.service → Deployment-Logs live anzeigen
+
+        docker stats → Container CPU/RAM live anzeigen
+        docker network ls → Docker-Netzwerke anzeigen
+        docker network inspect devops-net → DevOps-Netzwerk prüfen
+        docker inspect devnext → DevNext-Container Details anzeigen
+        
+        journalctl -fu devnext-deploy.service → Deployment-Logs live anzeigen
+        sudo systemctl status devnext-deploy.service → Deployment-Service prüfen
+        sudo systemctl start devnext-deploy.service → Deployment manuell starten
+        
+        curl http://127.0.0.1:3000/ → DevNext direkt testen
+        curl http://127.0.0.1:3000/metrics → DevNext-Metriken anzeigen
+        curl http://127.0.0.1:9090/-/healthy → Prometheus Health prüfen
+        curl http://127.0.0.1:3001/api/health → Grafana Health prüfen
+        
+        docker compose -f ~/monitoring/compose.yaml ps → Monitoring-Container prüfen
+        docker compose -f ~/monitoring/compose.yaml logs -f → Monitoring-Logs live anzeigen
+
+        curl -s 'http://127.0.0.1:9090/api/v1/query?query=up' → Prometheus Targets prüfen
     `);
 });
 
