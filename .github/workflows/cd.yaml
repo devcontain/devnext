@@ -12,11 +12,31 @@ on:
 
 jobs:
   deploy:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
     runs-on: self-hosted
 
     steps:
       - name: Runner check
         run: hostname
+
+      - name: Image-Tag festlegen
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+            IMAGE_TAG="${{ github.event.workflow_run.head_sha }}"
+          else
+            IMAGE_TAG="${{ github.sha }}"
+          fi
+
+          if [[ ! "$IMAGE_TAG" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Ungueltige Git-SHA: $IMAGE_TAG"
+            exit 1
+          fi
+
+          printf '%s\n' "$IMAGE_TAG" > /var/lib/devnext-deploy/image-tag
 
       - name: Deploy devnext
         run: sudo systemctl start devnext-deploy.service
