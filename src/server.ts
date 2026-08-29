@@ -3,8 +3,11 @@ import { collectDefaultMetrics, register } from "prom-client";
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;
+import path from "path";
 
 collectDefaultMetrics();
+
+app.use(express.static("public"));
 
 app.get("/metrics", async (_req, res) => {
     res.set("Content-Type", register.contentType);
@@ -12,70 +15,15 @@ app.get("/metrics", async (_req, res) => {
 });
 
 app.get("/", (req, res) => {
-    res.send(`
-        DevOps Demo "devnext" läuft
+    const acceptHeader = req.get("accept") || "";
 
-        DevOps Command List
+    if (!acceptHeader.includes("text/html")) {
+        res.type("text/plain");
+        res.send('DevOps Demo "devnext" läuft\n');
+        return;
+    }
 
-        ssh tronic@192.168.178.29 → DevOps-VM verbinden
-        ssh root@192.168.178.26 → Proxmox verbinden
-        ssh -T git@github.com → GitHub-SSH testen
-        ssh-add -l → Geladene SSH-Keys anzeigen
-
-        gh auth status → GitHub-Login prüfen
-        gh repo clone devcontain/devnext → DevNext klonen
-        gh repo clone devcontain/devnext-deploy → Deploy-Repo klonen
-
-        touch → Datei erstellen
-        chmod +x → Datei ausführbar machen
-        ~/start-devops.sh → DevNext + Monitoring starten
-
-        docker ps → Laufende Container
-        docker ps -a → Alle Container
-        docker images → Docker-Images anzeigen
-        docker start devnext → DevNext starten
-        docker stop devnext → DevNext stoppen
-        docker restart devnext → DevNext neu starten
-        docker logs devnext → DevNext-Logs anzeigen
-
-        docker compose ps → Compose-Status
-        docker compose up -d → Compose starten
-        docker compose down → Compose stoppen
-        docker compose restart → Compose neu starten
-
-        sudo poweroff → VM herunterfahren
-        sudo reboot → VM neu starten
-
-        tmux new -s devops → DevOps-Session starten
-        tmux attach -t devops → Session wieder öffnen
-        tmux ls → Sessions anzeigen
-        Ctrl+B, d → Session verlassen, weiterlaufen lassen
-        Ctrl+B, % → links/rechts teilen
-        Ctrl+B, " → oben/unten teilen
-        Ctrl+B, Pfeiltaste → Pane wechseln
-        Ctrl+B, x → Pane schließen
-
-        journalctl -fu devnext-deploy.service → Deployment-Logs live anzeigen
-
-        docker stats → Container CPU/RAM live anzeigen
-        docker network ls → Docker-Netzwerke anzeigen
-        docker network inspect devops-net → DevOps-Netzwerk prüfen
-        docker inspect devnext → DevNext-Container Details anzeigen
-        
-        journalctl -fu devnext-deploy.service → Deployment-Logs live anzeigen
-        sudo systemctl status devnext-deploy.service → Deployment-Service prüfen
-        sudo systemctl start devnext-deploy.service → Deployment manuell starten
-        
-        curl http://127.0.0.1:3000/ → DevNext direkt testen
-        curl http://127.0.0.1:3000/metrics → DevNext-Metriken anzeigen
-        curl http://127.0.0.1:9090/-/healthy → Prometheus Health prüfen
-        curl http://127.0.0.1:3001/api/health → Grafana Health prüfen
-        
-        docker compose -f ~/monitoring/compose.yaml ps → Monitoring-Container prüfen
-        docker compose -f ~/monitoring/compose.yaml logs -f → Monitoring-Logs live anzeigen
-
-        curl -s 'http://127.0.0.1:9090/api/v1/query?query=up' → Prometheus Targets prüfen
-    `);
+    res.sendFile(path.join(process.cwd(), "public", "index.html"));
 });
 
 app.get("/health", (req, res) => {
